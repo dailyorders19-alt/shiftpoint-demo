@@ -1,0 +1,62 @@
+{
+  "demoReferenceDate": "2026-06-30",
+  "generation": {
+    "startDate": "2026-06-01",
+    "endDate": "2026-06-30"
+  },
+  "settings": {
+    "language": "hu",
+    "companyName": "ShiftPoint Demo Kft.",
+    "dailyNormMinutes": 480,
+    "lunchBreakMinutes": 30,
+    "overtimeHourlyRate": 50,
+    "mealVoucherDailyValue": 40,
+    "storageMode": "demo",
+    "companyDays": [
+      {
+        "id": "DEMO-DAY-001",
+        "startDate": "2026-06-01",
+        "endDate": "2026-06-01",
+        "type": "dayOff",
+        "note": "Céges szabadnap"
+      }
+    ]
+  },
+  "employees": [
+    { "id": "EMP-001", "name": "Kovács Anna", "department": "Gyártás", "active": true, "lunchBreakEnabled": true, "note": "Műszakvezető", "demoPattern": { "arrival": "06:55", "durationMinutes": 535 } },
+    { "id": "EMP-002", "name": "Nagy Bence", "department": "Gyártás", "active": true, "lunchBreakEnabled": true, "note": "", "demoPattern": { "arrival": "07:05", "durationMinutes": 510 } },
+    { "id": "EMP-003", "name": "Maria Popescu", "department": "Minőség", "active": true, "lunchBreakEnabled": true, "note": "Minőségellenőr", "demoPattern": { "arrival": "07:25", "durationMinutes": 520 } },
+    { "id": "EMP-004", "name": "Andrei Ionescu", "department": "Raktár", "active": true, "lunchBreakEnabled": true, "note": "", "demoPattern": { "arrival": "06:45", "durationMinutes": 505 } },
+    { "id": "EMP-005", "name": "Szabó Dóra", "department": "Iroda", "active": true, "lunchBreakEnabled": false, "note": "Adminisztráció", "demoPattern": { "arrival": "08:00", "durationMinutes": 480 } },
+    { "id": "EMP-006", "name": "Tóth Gábor", "department": "Karbantartás", "active": true, "lunchBreakEnabled": true, "note": "", "demoPattern": { "arrival": "06:30", "durationMinutes": 545 } },
+    { "id": "EMP-007", "name": "Elena Stan", "department": "Gyártás", "active": true, "lunchBreakEnabled": true, "note": "", "demoPattern": { "arrival": "07:10", "durationMinutes": 515 } },
+    { "id": "EMP-008", "name": "Mihai Dumitru", "department": "Raktár", "active": true, "lunchBreakEnabled": true, "note": "Targoncavezető", "demoPattern": { "arrival": "06:50", "durationMinutes": 520 } },
+    { "id": "EMP-009", "name": "Varga Eszter", "department": "Minőség", "active": true, "lunchBreakEnabled": true, "note": "", "demoPattern": { "arrival": "07:35", "durationMinutes": 500 } },
+    { "id": "EMP-010", "name": "Cristian Radu", "department": "Gyártás", "active": true, "lunchBreakEnabled": true, "note": "", "demoPattern": { "arrival": "07:00", "durationMinutes": 530 } },
+    { "id": "EMP-011", "name": "Kiss Levente", "department": "Karbantartás", "active": true, "lunchBreakEnabled": true, "note": "", "demoPattern": { "arrival": "06:40", "durationMinutes": 540 } },
+    { "id": "EMP-012", "name": "Ioana Matei", "department": "Iroda", "active": true, "lunchBreakEnabled": false, "note": "HR", "demoPattern": { "arrival": "08:10", "durationMinutes": 470 } }
+  ],
+  "vacationAllowances": [
+    { "employeeId": "EMP-001", "year": 2026, "entitledDays": 22, "carriedOverDays": 2, "updatedAt": "2026-01-02T08:00:00.000Z" },
+    { "employeeId": "EMP-002", "year": 2026, "entitledDays": 20, "carriedOverDays": 0, "updatedAt": "2026-01-02T08:00:00.000Z" },
+    { "employeeId": "EMP-003", "year": 2026, "entitledDays": 24, "carriedOverDays": 1, "updatedAt": "2026-01-02T08:00:00.000Z" },
+    { "employeeId": "EMP-004", "year": 2026, "entitledDays": 21, "carriedOverDays": 0, "updatedAt": "2026-01-02T08:00:00.000Z" },
+    { "employeeId": "EMP-005", "year": 2026, "entitledDays": 23, "carriedOverDays": 3, "updatedAt": "2026-01-02T08:00:00.000Z" },
+    { "employeeId": "EMP-006", "year": 2026, "entitledDays": 22, "carriedOverDays": 0, "updatedAt": "2026-01-02T08:00:00.000Z" },
+    { "employeeId": "EMP-007", "year": 2026, "entitledDays": 20, "carriedOverDays": 1, "updatedAt": "2026-01-02T08:00:00.000Z" },
+    { "employeeId": "EMP-008", "year": 2026, "entitledDays": 21, "carriedOverDays": 0, "updatedAt": "2026-01-02T08:00:00.000Z" },
+    { "employeeId": "EMP-009", "year": 2026, "entitledDays": 24, "carriedOverDays": 2, "updatedAt": "2026-01-02T08:00:00.000Z" },
+    { "employeeId": "EMP-010", "year": 2026, "entitledDays": 20, "carriedOverDays": 0, "updatedAt": "2026-01-02T08:00:00.000Z" },
+    { "employeeId": "EMP-011", "year": 2026, "entitledDays": 22, "carriedOverDays": 1, "updatedAt": "2026-01-02T08:00:00.000Z" },
+    { "employeeId": "EMP-012", "year": 2026, "entitledDays": 23, "carriedOverDays": 0, "updatedAt": "2026-01-02T08:00:00.000Z" }
+  ],
+  "absencePlans": [
+    { "employeeId": "EMP-005", "employeeName": "Szabó Dóra", "department": "Iroda", "startDate": "2026-06-08", "endDate": "2026-06-12", "type": "vacation", "note": "Éves szabadság" },
+    { "employeeId": "EMP-007", "employeeName": "Elena Stan", "department": "Gyártás", "startDate": "2026-06-25", "endDate": "2026-06-26", "type": "vacation", "note": "Családi program" },
+    { "employeeId": "EMP-001", "employeeName": "Kovács Anna", "department": "Gyártás", "startDate": "2026-07-13", "endDate": "2026-07-17", "type": "vacation", "note": "Nyári szabadság" },
+    { "employeeId": "EMP-003", "employeeName": "Maria Popescu", "department": "Minőség", "startDate": "2026-08-03", "endDate": "2026-08-07", "type": "vacation", "note": "Tervezett szabadság" },
+    { "employeeId": "EMP-012", "employeeName": "Ioana Matei", "department": "Iroda", "startDate": "2026-07-06", "endDate": "2026-07-10", "type": "vacation", "note": "Nyári szabadság" },
+    { "employeeId": "EMP-008", "employeeName": "Mihai Dumitru", "department": "Raktár", "startDate": "2026-06-22", "endDate": "2026-06-24", "type": "sick", "note": "Betegszabadság" },
+    { "employeeId": "EMP-011", "employeeName": "Kiss Levente", "department": "Karbantartás", "startDate": "2026-06-18", "endDate": "2026-06-18", "type": "excused", "note": "Igazolt távollét" }
+  ]
+}
