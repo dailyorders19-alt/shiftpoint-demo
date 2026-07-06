@@ -73,7 +73,7 @@ function buildDemoAttendanceEvents(demoData) {
     }
   });
 
-  return events.sort((left, right) => left.timestamp.localeCompare(right.timestamp));
+  return events.sort((left, right) => left.createdAt.localeCompare(right.createdAt));
 }
 
 function addGeneratedWorkday(events, employee, employeeIndex, dateKey) {
@@ -102,14 +102,15 @@ function addGeneratedWorkday(events, employee, employeeIndex, dateKey) {
 }
 
 function addDemoEvent(events, employee, dateKey, minuteOfDay, type, source) {
-  const timestamp = buildDemoTimestamp(dateKey, minuteOfDay);
+  const createdAt = buildDemoTimestamp(dateKey, minuteOfDay);
   events.push({
     id: `DEMO-${employee.id}-${dateKey}-${type}-${String(minuteOfDay)}`,
     employeeId: employee.id,
     employeeName: employee.name,
     department: employee.department,
     type,
-    timestamp,
+    createdAt,
+    timeValue: formatDemoTime(minuteOfDay),
     source,
     dateKey
   });
@@ -151,6 +152,13 @@ function buildDemoTimestamp(dateKey, minuteOfDay) {
   const date = parseDemoDateKey(dateKey);
   date.setHours(Math.floor(minuteOfDay / 60), minuteOfDay % 60, 0, 0);
   return date.toISOString();
+}
+
+function formatDemoTime(minuteOfDay) {
+  const normalizedMinutes = ((minuteOfDay % 1440) + 1440) % 1440;
+  const hours = String(Math.floor(normalizedMinutes / 60)).padStart(2, "0");
+  const minutes = String(normalizedMinutes % 60).padStart(2, "0");
+  return `${hours}:${minutes}`;
 }
 
 function cloneDemoValue(value) {
