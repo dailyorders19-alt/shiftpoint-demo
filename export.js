@@ -249,6 +249,7 @@ function exportDailyPdf() {
     </html>
   `);
 
+  removeHiddenOvertimeFromPrintDocument(printWindow.document);
   printWindow.document.close();
 }
 
@@ -367,11 +368,88 @@ function exportDailyXlsx() {
 }
 
 function createSimpleXlsxBlob(rows, sheetName) {
-  const files = buildSimpleXlsxFiles(rows, sheetName);
+  const files = buildSimpleXlsxFiles(prepareRowsForOvertimeVisibility(rows), sheetName);
   const zipContent = createZipFile(files);
 
   return new Blob([zipContent], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  });
+}
+
+function getHiddenOvertimeExportLabels() {
+  return new Set([
+    t("attendance.overtime"),
+    t("payment.overtimeValue"),
+    t("payment.overtimeRate"),
+    t("statistics.mostOvertime"),
+    t("payment.totalPayment")
+  ]);
+}
+
+function prepareRowsForOvertimeVisibility(rows) {
+  if (typeof shouldShowOvertimeData !== "function" || shouldShowOvertimeData()) {
+    return rows;
+  }
+
+  const labels = getHiddenOvertimeExportLabels();
+  let hiddenIndexes = [];
+
+  return rows.reduce((result, row) => {
+    const cells = Array.isArray(row) ? row : [];
+
+    if (cells.length === 0) {
+      hiddenIndexes = [];
+      result.push(cells);
+      return result;
+    }
+
+    if (cells.length <= 2 && labels.has(String(cells[0] || "").trim())) {
+      return result;
+    }
+
+    const headerHiddenIndexes = cells
+      .map((cell, index) => labels.has(String(cell || "").trim()) ? index : -1)
+      .filter((index) => index >= 0);
+
+    if (headerHiddenIndexes.length > 0) {
+      hiddenIndexes = headerHiddenIndexes;
+    } else if (cells.length === 1) {
+      hiddenIndexes = [];
+    }
+
+    result.push(cells.filter((cell, index) => !hiddenIndexes.includes(index)));
+    return result;
+  }, []);
+}
+
+function removeHiddenOvertimeFromPrintDocument(printDocument) {
+  if (typeof shouldShowOvertimeData !== "function" || shouldShowOvertimeData()) {
+    return;
+  }
+
+  const labels = getHiddenOvertimeExportLabels();
+
+  printDocument.querySelectorAll("table").forEach((table) => {
+    table.querySelectorAll("tr").forEach((row) => {
+      const firstCell = row.cells && row.cells[0];
+      if (row.cells.length <= 2 && firstCell && labels.has(firstCell.textContent.trim())) {
+        row.remove();
+      }
+    });
+
+    const headers = [...table.querySelectorAll("thead th")];
+    const indexes = headers
+      .map((cell, index) => labels.has(cell.textContent.trim()) ? index : -1)
+      .filter((index) => index >= 0)
+      .sort((a, b) => b - a);
+
+    indexes.forEach((index) => {
+      table.querySelectorAll("tr").forEach((row) => {
+        if (row.cells && row.cells[index]) {
+          row.deleteCell(index);
+        }
+      });
+    });
   });
 }
 
@@ -881,6 +959,7 @@ function exportWeeklyPdf() {
     </html>
   `);
 
+  removeHiddenOvertimeFromPrintDocument(printWindow.document);
   printWindow.document.close();
 }
 
@@ -1378,6 +1457,7 @@ function exportMonthlyPdf() {
     </html>
   `);
 
+  removeHiddenOvertimeFromPrintDocument(printWindow.document);
   printWindow.document.close();
 }
 
@@ -1901,6 +1981,7 @@ function exportEmployeePdf() {
     </html>
   `);
 
+  removeHiddenOvertimeFromPrintDocument(printWindow.document);
   printWindow.document.close();
 }
 

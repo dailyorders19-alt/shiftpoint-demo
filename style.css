@@ -6098,3 +6098,6 @@ textarea:disabled {
     max-width: none;
   }
 }
+body.hide-overtime-data .overtime-data {
+  display: none !important;
+}

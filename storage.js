@@ -7,6 +7,7 @@ const DEFAULT_SETTINGS = {
   dailyNormMinutes: 480,
   lunchBreakMinutes: 30,
   companyDays: [],
+  showOvertimeData: false,
   overtimeHourlyRate: 50,
   mealVoucherDailyValue: 40,
   storageMode: "demo"

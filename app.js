@@ -5,6 +5,7 @@ let absenceRecords = [];
 let vacationAllowances = [];
 let selectedMonthlyAccountingEmployeeId = "";
 let selectedVacationEmployeeId = "";
+let overtimeVisibilityObserver = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
   if (typeof initializeStorage === "function") {
@@ -27,6 +28,7 @@ function initApp() {
   initVacationTrackerPage();
   initExportPage();
   applyLanguage(appSettings.language);
+  initOvertimeVisibility();
   refreshInterfaceIcons();
   fillSettingsFields();
   initDateTimePickers();
@@ -79,7 +81,7 @@ const DEMO_LOCKED_FIELD_SELECTOR = [
   "#companyDayForm select",
   "#vacationAllowanceForm input",
   "#vacationAllowanceForm select",
-  "#settingsForm input",
+  "#settingsForm input:not(#showOvertimeDataInput)",
   "#settingsForm select",
   "#importJsonFileInput"
 ].join(",");
@@ -237,6 +239,7 @@ function initLanguageSwitcher() {
       appSettings.language = selectedLanguage;
       saveSettings(appSettings);
       applyLanguage(selectedLanguage);
+      applyOvertimeVisibility();
       initDateTimePickers();
       renderEmployeesTable();
       renderEmployeeCards();
@@ -284,12 +287,84 @@ function t(key) {
   return LANGUAGE_DATA[selectedLanguage][key] || LANGUAGE_DATA.hu[key] || key;
 }
 
+function shouldShowOvertimeData() {
+  return appSettings.showOvertimeData !== false;
+}
+
+function getOvertimeVisibilityLabels() {
+  return new Set([
+    t("attendance.overtime"),
+    t("payment.overtimeValue"),
+    t("payment.overtimeRate"),
+    t("statistics.mostOvertime"),
+    t("settings.overtimeHourlyRate"),
+    t("payment.totalPayment")
+  ]);
+}
+
+function initOvertimeVisibility() {
+  applyOvertimeVisibility();
+
+  if (overtimeVisibilityObserver) {
+    return;
+  }
+
+  overtimeVisibilityObserver = new MutationObserver(() => {
+    applyOvertimeVisibility();
+  });
+  overtimeVisibilityObserver.observe(document.querySelector(".main-content"), {
+    childList: true,
+    subtree: true
+  });
+}
+
+function applyOvertimeVisibility() {
+  document.body.classList.toggle("hide-overtime-data", !shouldShowOvertimeData());
+  markOvertimeDataElements(document);
+}
+
+function markOvertimeDataElements(root) {
+  const labels = getOvertimeVisibilityLabels();
+
+  root.querySelectorAll("table").forEach((table) => {
+    table.querySelectorAll("tr").forEach((row) => {
+      const firstCell = row.cells && row.cells[0];
+      if (firstCell && labels.has(firstCell.textContent.trim())) {
+        row.classList.add("overtime-data");
+      }
+    });
+
+    const headerCells = [...table.querySelectorAll("thead th")];
+    const overtimeIndexes = headerCells
+      .map((cell, index) => labels.has(cell.textContent.trim()) ? index : -1)
+      .filter((index) => index >= 0);
+
+    overtimeIndexes.forEach((index) => {
+      table.querySelectorAll("tr").forEach((row) => {
+        if (row.cells && row.cells[index]) {
+          row.cells[index].classList.add("overtime-data");
+        }
+      });
+    });
+  });
+
+  root.querySelectorAll(
+    ".profile-summary-card, .statistics-card, .manager-ranking, .export-summary-card"
+  ).forEach((element) => {
+    const label = element.querySelector("span, h4");
+    if (label && labels.has(label.textContent.trim())) {
+      element.classList.add("overtime-data");
+    }
+  });
+}
+
 function fillSettingsFields() {
   const settingsForm = document.getElementById("settingsForm");
   const companyNameInput = document.getElementById("companyNameInput");
   const dailyNormInput = document.getElementById("dailyNormInput");
   const lunchBreakInput = document.getElementById("lunchBreakInput");
   const overtimeHourlyRateInput = document.getElementById("overtimeHourlyRateInput");
+  const showOvertimeDataInput = document.getElementById("showOvertimeDataInput");
   const mealVoucherDailyValueInput = document.getElementById("mealVoucherDailyValueInput");
   const storageModeInput = document.getElementById("storageModeInput");
   const settingsResetButton = document.getElementById("settingsResetButton");
@@ -308,6 +383,14 @@ function fillSettingsFields() {
 
   if (overtimeHourlyRateInput) {
     overtimeHourlyRateInput.value = Number(appSettings.overtimeHourlyRate || 0);
+  }
+
+  if (showOvertimeDataInput) {
+    showOvertimeDataInput.checked = shouldShowOvertimeData();
+    showOvertimeDataInput.addEventListener("change", () => {
+      appSettings.showOvertimeData = showOvertimeDataInput.checked;
+      applyOvertimeVisibility();
+    });
   }
 
   if (mealVoucherDailyValueInput) {
@@ -337,6 +420,7 @@ function saveSettingsFromForm() {
   const dailyNormInput = document.getElementById("dailyNormInput");
   const lunchBreakInput = document.getElementById("lunchBreakInput");
   const overtimeHourlyRateInput = document.getElementById("overtimeHourlyRateInput");
+  const showOvertimeDataInput = document.getElementById("showOvertimeDataInput");
   const mealVoucherDailyValueInput = document.getElementById("mealVoucherDailyValueInput");
 
   const dailyNormMinutes = parseTimeInputToMinutes(dailyNormInput ? dailyNormInput.value : "");
@@ -371,6 +455,7 @@ function saveSettingsFromForm() {
       : "Centru de sticla",
     dailyNormMinutes,
     lunchBreakMinutes,
+    showOvertimeData: showOvertimeDataInput ? showOvertimeDataInput.checked : true,
     overtimeHourlyRate,
     mealVoucherDailyValue,
     storageMode: "supabase"
@@ -388,6 +473,7 @@ function resetSettingsToDefaults() {
     companyName: "Centru de sticla",
     dailyNormMinutes: 480,
     lunchBreakMinutes: 30,
+    showOvertimeData: false,
     overtimeHourlyRate: 0,
     mealVoucherDailyValue: 0,
     storageMode: "supabase"
@@ -404,6 +490,7 @@ function fillSettingsValues() {
   const dailyNormInput = document.getElementById("dailyNormInput");
   const lunchBreakInput = document.getElementById("lunchBreakInput");
   const overtimeHourlyRateInput = document.getElementById("overtimeHourlyRateInput");
+  const showOvertimeDataInput = document.getElementById("showOvertimeDataInput");
   const mealVoucherDailyValueInput = document.getElementById("mealVoucherDailyValueInput");
   const storageModeInput = document.getElementById("storageModeInput");
 
@@ -421,6 +508,10 @@ function fillSettingsValues() {
 
   if (overtimeHourlyRateInput) {
     overtimeHourlyRateInput.value = Number(appSettings.overtimeHourlyRate || 0);
+  }
+
+  if (showOvertimeDataInput) {
+    showOvertimeDataInput.checked = shouldShowOvertimeData();
   }
 
   if (mealVoucherDailyValueInput) {

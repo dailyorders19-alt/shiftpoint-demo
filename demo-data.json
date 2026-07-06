@@ -9,6 +9,7 @@
     "companyName": "ShiftPoint Demo Kft.",
     "dailyNormMinutes": 480,
     "lunchBreakMinutes": 30,
+    "showOvertimeData": false,
     "overtimeHourlyRate": 50,
     "mealVoucherDailyValue": 40,
     "storageMode": "demo",
